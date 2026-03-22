@@ -1,0 +1,14 @@
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - .:/app
+    restart: always
+
+# Optional: Add Pinecone related config if needed
