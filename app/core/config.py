@@ -10,10 +10,10 @@ class Settings(BaseSettings):
     OPENAI_API_BASE: str = os.getenv("OPENAI_API_BASE", "https://api.openai.com/v1")
     EMBEDDING_MODEL: str = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
     PINECONE_API_KEY: str = os.getenv("PINECONE_API_KEY", "")
-    PINECONE_INDEX_NAME: str = os.getenv("PINECONE_INDEX_NAME", "notebooklm-clone")
+    PINECONE_INDEX_NAME: str = os.getenv("PINECONE_INDEX_NAME", "dorag-system")
     SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
     SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
-    PROJECT_NAME: str = "NotebookLM Clone API"
+    PROJECT_NAME: str = "Document RAG System"
     VERSION: str = "0.1.0"
     
     # JWT Settings

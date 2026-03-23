@@ -11,18 +11,24 @@ from app.models.schemas import (
 )
 from app.services.rag_service import rag_service
 from app.core.auth import create_access_token, check_admin_role, get_current_user
+from app.core.db import get_supabase_client
+from app.core.security import verify_password
 
 router = APIRouter()
 
 @router.post("/login")
 async def login(request: LoginRequest):
-    # Determine role based on username
-    if request.username == "admin" and request.password == "admin":
-        role = "admin"
-    elif request.username == "user" and request.password == "user":
-        role = "user"
-    else:
+    supabase = get_supabase_client()
+    try:
+        response = supabase.table("users").select("*").eq("username", request.username).execute()
+        user = response.data[0] if response.data else None
+    except Exception:
+        raise HTTPException(status_code=500, detail="Database connection error")
+
+    if not user or not verify_password(request.password, user['hashed_password']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    role = user['role']
     
     # Create real JWT access token
     access_token = create_access_token(data={"sub": request.username, "role": role})
