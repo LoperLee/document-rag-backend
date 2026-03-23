@@ -3,7 +3,6 @@ import io
 from typing import TypedDict, List
 from langchain_google_genai import ChatGoogleGenerativeAI
 import uuid
-from supabase import create_client, Client
 from langchain_core.documents import Document
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_community.document_loaders import PyMuPDFLoader
@@ -12,6 +11,7 @@ from pinecone import Pinecone as PineconeClient
 from langchain_pinecone import PineconeVectorStore, PineconeEmbeddings
 from langgraph.graph import StateGraph, START, END
 from app.core.config import settings
+from app.core.db import get_supabase_client
 
 class GraphState(TypedDict, total=False):
     question: str
@@ -31,10 +31,7 @@ class RAGService:
         os.makedirs("uploads", exist_ok=True)
 
     def initialize(self):
-        if settings.SUPABASE_URL and settings.SUPABASE_KEY:
-            self.supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
-        else:
-            print("Warning: Supabase keys not set.")
+        self.supabase = get_supabase_client()
 
         if not settings.GOOGLE_API_KEY or not settings.PINECONE_API_KEY:
             print("Warning: API keys not set. RAG might not work.")

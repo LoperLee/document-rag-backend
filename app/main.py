@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import router
 from app.services.rag_service import rag_service
 from app.core.config import settings
-from app.core.db import init_db
 
 def create_app() -> FastAPI:
     app = FastAPI(
