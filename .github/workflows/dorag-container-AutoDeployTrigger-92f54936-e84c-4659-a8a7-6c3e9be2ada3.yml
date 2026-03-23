@@ -38,6 +38,6 @@ jobs:
           acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
           containerAppName: dorag-backend
           resourceGroup: dorag-resource
-          imageToBuild: ${{ secrets.REGISTRY_LOGIN_SERVER }}/dorag-backend:${{ github.sha }}
+          imageToBuild: ${{ secrets.REGISTRY_LOGIN_SERVER }}/dorag-backend:latest
           _buildArgumentsKey_: |
             _buildArgumentsValues_
