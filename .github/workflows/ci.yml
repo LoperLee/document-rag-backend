@@ -1,24 +1,22 @@
-name: Trigger auto deployment for dorag-backend
+name: Trigger auto deployment for dorag-container
 
-# When this action will be executed
 on:
-  # Automatically trigger it when detected changes in repo
   push:
     branches: 
       [ main ]
     paths:
     - '**'
-    - '.github/workflows/dorag-backend-AutoDeployTrigger-f6fb5240-f55f-4c04-afa0-d911f5a3dbf1.yml'
+    - '.github/workflows/ci.yml'
 
-  # Allow manual trigger 
+
   workflow_dispatch:      
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions: 
-      id-token: write #This is required for requesting the OIDC JWT Token
-      contents: read #Required when GH token is used to authenticate with private repo
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout to the branch
@@ -27,9 +25,9 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.DORAGBACKEND_AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.DORAGBACKEND_AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.DORAGBACKEND_AZURE_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.DORAGCONTAINER_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.DORAGCONTAINER_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.DORAGCONTAINER_AZURE_SUBSCRIPTION_ID }}
 
       - name: Build and push container image to registry
         uses: azure/container-apps-deploy-action@v2
@@ -37,13 +35,11 @@ jobs:
           appSourcePath: ${{ github.workspace }}
           _dockerfilePathKey_: _dockerfilePath_
           _targetLabelKey_: _targetLabel_
-          registryUrl: ${{ secrets.REGISTRY_NAME }}
-          registryUsername: ${{ secrets.DORAGBACKEND_REGISTRY_USERNAME }}
-          registryPassword: ${{ secrets.DORAGBACKEND_REGISTRY_PASSWORD }}
+          acrName: ${{ secrets.REGISTRY_NAME }}
+          acrUsername: ${{ secrets.REGISTRY_USERNAME }}
+          acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
           containerAppName: dorag-backend
           resourceGroup: dorag-resource
-          imageToBuild: ${{ secrets.REGISTRY_NAME }}/dorag-backend:latest
+          imageToBuild: ${{ secrets.REGISTRY_LOGIN_SERVER }}/dorag-backend:latest
           _buildArgumentsKey_: |
             _buildArgumentsValues_
-
-
